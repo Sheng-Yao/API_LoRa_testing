@@ -10,13 +10,11 @@
 
 // Source: https://embeddedthere.com/esp32-lora-tutorial-using-arduino-ide/
 
-String LoRaData;
-
 void setup() {
   //initialize Serial Monitor
   Serial.begin(115200);
 
-  Serial.println("LoRa Sender");
+  Serial.println("LoRa Receiver");
 
   //setup LoRa transceiver module
   LoRa.setPins(NSS, RST, DI0);
@@ -29,6 +27,7 @@ void setup() {
     Serial.println(".");
     delay(500);
   }
+
   // Change sync word (0xF1) to match the receiver LoRa
   // This code ensure that you don't get LoRa messages
   // from other LoRa transceivers
@@ -38,6 +37,9 @@ void setup() {
 }
 
 void loop() {
+
+  String LoRaData;
+
   // LoRa data packet size received from LoRa sender
    int packetSize = LoRa.parsePacket();
    // if the packer size is not 0, then execute this if condition
@@ -51,5 +53,12 @@ void loop() {
     }
     Serial.println(LoRaData);
 
+    Serial.println("Sending confirmation message.");
+
+    // Start sending message via LoRa
+    LoRa.beginPacket();
+    LoRa.print("Received");
+    LoRa.endPacket();
+    delay(500);
   }
 }
